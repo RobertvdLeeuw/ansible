@@ -1,0 +1,169 @@
+@define-color white      #F2F2F2;
+@define-color black      #000203;
+@define-color text       #11111B;
+@define-color lightgray  #686868;
+@define-color darkgray   #353535;
+@define-color red        #F38BA8;
+
+@define-color black-transparent-1 rgba(0, 0, 0, 0.1);
+@define-color black-transparent-2 rgba(0, 0, 0, 0.2);
+@define-color black-transparent-3 rgba(0, 0, 0, 0.3);
+@define-color black-transparent-4 rgba(0, 0, 0, 0.4);
+@define-color black-transparent-5 rgba(0, 0, 0, 0.5);
+@define-color black-transparent-6 rgba(0, 0, 0, 0.6);
+@define-color black-transparent-7 rgba(0, 0, 0, 0.7);
+@define-color black-transparent-8 rgba(0, 0, 0, 0.8);
+@define-color black-transparent-9 rgba(0, 0, 0, 0.9);
+@define-color black-solid         rgba(0, 0, 0, 1.0);
+
+* {
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 15px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  margin: 0;
+}
+
+#custom-workspaces {
+  color: #bfbfbf;
+  padding: 0 10px;
+}
+
+window#waybar {
+  /* background-color: #1e1e2e; */
+  background-color: alpha(#1e1e2e, 0.99);
+  color: @text;
+  border-radius: 0;
+}
+
+/* tooltip { */
+/*   background: @black-solid; */
+/*   border: 1px solid @darkgray; */
+/*   border-radius: 0; */
+/* } */
+/* tooltip label { */
+/*   color: @text; */
+/* } */
+
+/* #workspaces { */
+/* } */
+
+#workspaces button {
+  background-color: transparent;
+  color: @lightgray;
+}
+
+#workspaces button:hover {
+  box-shadow: inherit;
+  text-shadow: inherit;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0);
+  color: @white;
+  transition: all 0.3s ease;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+  color: @white;
+  transition: all 0.3s ease;
+  animation: colored-gradient 10s ease infinite;
+}
+
+#workspaces button.urgent {
+  background-color: @red;
+  color: @black;
+  transition: all 0.3s ease;
+}
+
+/* -------------------------------------------------------------------------------- */
+
+#submap,
+#pulseaudio,
+/* #custom-audio, */
+#custom-cpu_info,
+#custom-gpu_info,
+#network,
+#bluetooth,
+#clock {
+  color: @text;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left: 6px;
+  margin-right: 6px;
+
+  padding-left: 10px;
+  padding-right: 10px;
+
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+#cpu {
+  color: @text;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left: 6px;
+  margin-right: 6px;
+
+  padding-left: 10px;
+  padding-right: 0px;
+
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+#temperature {
+  color: @text;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left: 6px;
+  margin-right: 6px;
+
+  padding-left: 10px;
+  padding-right: 10px;
+
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+#clock {
+  background-color: #b4befe;
+}
+
+#custom-cpu_info {
+  background-color: #92cf84;
+}
+
+#custom-gpu_info {
+  background-color: #f2a297;
+}
+
+#network {
+  background-color: #dea364;
+}
+
+#bluetooth {
+  background-color: #7777f4;
+}
+
+/* #custom-audio, */
+#pulseaudio {
+  background-color: #cba6f7;
+}
+
+
+#submap {
+  border: 0px;
+}
+
+/* -------------------------------------------------------------------------------- */
+
+#tray {
+  background-color: transparent;
+  padding: 1px 5px;
+}
+#tray menu {
+  padding: 2px;
+  border-radius: 0px;
+}
