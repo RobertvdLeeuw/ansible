@@ -1,0 +1,36 @@
+software_categories:
+    foundation:
+      packages:
+        apt: []
+        flatpak:[]
+        snap: []
+
+    terminal:
+      packages:
+        apt: []
+        flatpak:[]
+        snap: []
+
+    development:
+      packages:
+        apt: []
+        flatpak:[]
+        snap: []
+
+    desktop:
+      packages:
+        apt: []
+        flatpak:[]
+        snap: []
+
+    gaming:
+      packages:
+        apt: []
+        flatpak:[]
+        snap: []
+
+    uncategorized:
+      packages:
+        apt: []
+        flatpak:[]
+        snap: []
