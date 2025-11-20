@@ -59,6 +59,12 @@
     update_cache: yes
   become: yes
 
+- name: "Verify age is installed and accessible"
+  command: which age
+  register: age_path
+  changed_when: false
+  failed_when: age_path.rc != 0
+
 - name: "Check if SOPS is already installed"
   stat:
     path: /usr/local/bin/sops
@@ -79,6 +85,12 @@
   become: yes
   when: not sops_binary.stat.exists
 
+- name: "Verify sops is installed and accessible"
+  command: which sops
+  register: sops_path
+  changed_when: false
+  failed_when: sops_path.rc != 0
+
 - name: "Create SOPS age directory"
   file:
     path: "{{ ansible_env.HOME }}/.config/sops/age"
@@ -95,20 +107,32 @@
     path: "{{ playbook_dir }}/scripts/env-helper.sh"
     mode: '0755'
 
-- name: "Display SOPS setup instructions"
+- name: "Run SOPS setup to generate age key"
+  command: "{{ playbook_dir }}/scripts/sops-setup.sh"
+  args:
+    creates: "{{ ansible_env.HOME }}/.config/sops/age/keys.txt"
+  register: sops_setup_result
+
+- name: "Display SOPS setup result"
   debug:
     msg: |
-      SOPS and age have been installed for secrets management.
+      {% if sops_setup_result.changed %}
+      ✓ SOPS encryption has been set up successfully!
 
-      To set up your encryption key and .env file:
-      1. Run: ./scripts/sops-setup.sh
-      2. Follow the instructions to create and encrypt your .env file
+      Your age key has been generated at: ~/.config/sops/age/keys.txt
+      IMPORTANT: Back up this key securely!
+
+      Next steps:
+      - Create and edit your .env file: ./scripts/env-helper.sh init && ./scripts/env-helper.sh edit
+      - The .env file will be automatically encrypted when you save
+      {% else %}
+      ✓ SOPS encryption is already configured.
+
+      Your age key is at: ~/.config/sops/age/keys.txt
+      {% endif %}
 
       Quick commands:
-      - ./scripts/env-helper.sh init   # Create .env from template
-      - ./scripts/env-helper.sh edit   # Edit encrypted .env
-      - ./scripts/env-helper.sh view   # View secrets
-
-      Your age key will be stored at: ~/.config/sops/age/keys.txt
-      IMPORTANT: Back up this key securely!
+      - env-edit    # Edit encrypted .env (alias)
+      - env-view    # View decrypted .env (alias)
+      - env-reload  # Reload environment variables (alias)
 
