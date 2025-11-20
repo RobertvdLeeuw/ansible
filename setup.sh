@@ -46,7 +46,7 @@ echo ""
 echo "========================================="
 echo "Running foundation setup..."
 echo "========================================="
-ansible-playbook playbook.yml --tags foundation -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags foundation -K
 
 # Set up SOPS and .env
 echo ""
@@ -83,9 +83,9 @@ echo "1. Edit your .env file:"
 echo "     ./scripts/env-helper.sh edit"
 echo ""
 echo "2. Run full installation:"
-echo "     ansible-playbook playbook.yml -K"
+echo "     ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git -K"
 echo ""
 echo "Or install specific categories:"
-echo "     ansible-playbook playbook.yml --tags terminal,development,desktop -K"
+echo "     ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags terminal,development,desktop -K"
 echo ""
 

@@ -23,7 +23,7 @@ After the initial setup, install everything:
 
 ```bash
 cd ansible
-ansible-playbook playbook.yml -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git -K
 ```
 
 ### Selective Installation
@@ -32,22 +32,22 @@ Install only specific categories:
 
 ```bash
 # Terminal tools only
-ansible-playbook playbook.yml --tags terminal -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags terminal -K
 
 # Development environment only
-ansible-playbook playbook.yml --tags development -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags development -K
 
 # Desktop applications only
-ansible-playbook playbook.yml --tags desktop -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags desktop -K
 
 # Gaming software only
-ansible-playbook playbook.yml --tags gaming -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags gaming -K
 
 # Multiple categories
-ansible-playbook playbook.yml --tags terminal,development,desktop -K
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags terminal,development,desktop -K
 
 # Dotfiles only
-ansible-playbook playbook.yml --tags dotfiles
+ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags dotfiles
 ```
 
 ## Software Categories
@@ -97,7 +97,7 @@ ansible-playbook playbook.yml --tags dotfiles
 
 ```
 ansible/
-├── playbook.yml              # Main playbook
+├── local.yml                 # Main playbook (for ansible-pull)
 ├── setup.sh                  # Initial setup script
 ├── .env.example              # Template for environment variables
 ├── .sops.yaml                # SOPS encryption configuration
