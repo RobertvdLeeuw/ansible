@@ -5,7 +5,6 @@ software_categories:
       apt:
         - flatpak
         - snapd
-        - software-properties-common
     dotfiles: []
 
   terminal:
