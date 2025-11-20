@@ -35,9 +35,16 @@ usage() {
 }
 
 check_sops() {
-    if ! command -v sops &> /dev/null; then
+    # Check for sops in common locations
+    if command -v sops &> /dev/null; then
+        SOPS_CMD="sops"
+    elif [ -f /usr/local/bin/sops ]; then
+        SOPS_CMD="/usr/local/bin/sops"
+    elif [ -f /usr/bin/sops ]; then
+        SOPS_CMD="/usr/bin/sops"
+    else
         echo -e "${RED}Error: sops is not installed${NC}"
-        echo "Run: ansible-playbook playbook.yml --tags foundation -K"
+        echo "Run: ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags foundation -K"
         exit 1
     fi
 }
@@ -78,13 +85,13 @@ cmd_init() {
 cmd_edit() {
     check_sops
     check_age_key
-    
+
     if [ ! -f "$ENV_FILE" ]; then
         echo -e "${YELLOW}$ENV_FILE not found. Creating from template...${NC}"
         cmd_init
     fi
-    
-    sops "$ENV_FILE"
+
+    $SOPS_CMD "$ENV_FILE"
     echo -e "${GREEN}✓ File saved and encrypted${NC}"
     echo -e "${YELLOW}To load changes in current shell, run:${NC}"
     echo -e "  ${CYAN}env-reload${NC}  (or: source ~/.zshrc / source ~/.bashrc)"
@@ -93,44 +100,44 @@ cmd_edit() {
 cmd_view() {
     check_sops
     check_age_key
-    
+
     if [ ! -f "$ENV_FILE" ]; then
         echo -e "${RED}Error: $ENV_FILE not found${NC}"
         echo "Run: $0 init"
         exit 1
     fi
-    
-    sops -d "$ENV_FILE"
+
+    $SOPS_CMD -d "$ENV_FILE"
 }
 
 cmd_encrypt() {
     check_sops
     check_age_key
-    
+
     if [ ! -f "$ENV_FILE" ]; then
         echo -e "${RED}Error: $ENV_FILE not found${NC}"
         exit 1
     fi
-    
+
     # Check if already encrypted
     if grep -q "sops:" "$ENV_FILE" 2>/dev/null; then
         echo -e "${YELLOW}File appears to already be encrypted${NC}"
         exit 0
     fi
-    
-    sops -e -i "$ENV_FILE"
+
+    $SOPS_CMD -e -i "$ENV_FILE"
     echo -e "${GREEN}✓ $ENV_FILE encrypted${NC}"
 }
 
 cmd_decrypt() {
     check_sops
     check_age_key
-    
+
     if [ ! -f "$ENV_FILE" ]; then
         echo -e "${RED}Error: $ENV_FILE not found${NC}"
         exit 1
     fi
-    
+
     echo -e "${YELLOW}WARNING: This will leave $ENV_FILE unencrypted!${NC}"
     read -p "Continue? (y/N) " -n 1 -r
     echo
@@ -138,8 +145,8 @@ cmd_decrypt() {
         echo "Aborted"
         exit 0
     fi
-    
-    sops -d -i "$ENV_FILE"
+
+    $SOPS_CMD -d -i "$ENV_FILE"
     echo -e "${GREEN}✓ $ENV_FILE decrypted${NC}"
     echo -e "${RED}Remember to re-encrypt before committing!${NC}"
 }
@@ -154,7 +161,7 @@ cmd_export() {
     fi
 
     # Decrypt and export
-    sops -d "$ENV_FILE" | grep -v '^#' | grep -v '^$' | while IFS= read -r line; do
+    $SOPS_CMD -d "$ENV_FILE" | grep -v '^#' | grep -v '^$' | while IFS= read -r line; do
         echo "export $line"
     done
 }

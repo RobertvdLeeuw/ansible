@@ -11,19 +11,39 @@ SOPS_CONFIG=".sops.yaml"
 echo "=== SOPS Setup ==="
 echo
 
-# Check if age is installed
-if ! command -v age &> /dev/null; then
+# Check if age is installed (check common locations)
+AGE_CMD=""
+if command -v age &> /dev/null; then
+    AGE_CMD="age"
+elif [ -f /usr/bin/age ]; then
+    AGE_CMD="/usr/bin/age"
+elif [ -f /usr/local/bin/age ]; then
+    AGE_CMD="/usr/local/bin/age"
+else
     echo "Error: age is not installed"
-    echo "Please run the foundation playbook first: ansible-playbook playbook.yml --tags foundation -K"
+    echo "Please run the foundation playbook first:"
+    echo "  ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags foundation -K"
     exit 1
 fi
 
-# Check if sops is installed
-if ! command -v sops &> /dev/null; then
+# Check if sops is installed (check common locations)
+SOPS_CMD=""
+if command -v sops &> /dev/null; then
+    SOPS_CMD="sops"
+elif [ -f /usr/local/bin/sops ]; then
+    SOPS_CMD="/usr/local/bin/sops"
+elif [ -f /usr/bin/sops ]; then
+    SOPS_CMD="/usr/bin/sops"
+else
     echo "Error: sops is not installed"
-    echo "Please run the foundation playbook first: ansible-playbook playbook.yml --tags foundation -K"
+    echo "Please run the foundation playbook first:"
+    echo "  ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --tags foundation -K"
     exit 1
 fi
+
+echo "Found age at: $AGE_CMD"
+echo "Found sops at: $SOPS_CMD"
+echo
 
 # Create age key directory
 mkdir -p "$SOPS_AGE_DIR"
@@ -35,7 +55,7 @@ if [ -f "$SOPS_AGE_KEY" ]; then
     PUBLIC_KEY=$(grep "# public key:" "$SOPS_AGE_KEY" | cut -d: -f2 | tr -d ' ')
 else
     echo "Generating new age key..."
-    age-keygen -o "$SOPS_AGE_KEY"
+    $AGE_CMD-keygen -o "$SOPS_AGE_KEY"
     echo
     echo "Age key generated at: $SOPS_AGE_KEY"
     echo
