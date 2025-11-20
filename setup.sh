@@ -38,6 +38,9 @@ fi
 
 cd ansible
 
+# Make scripts executable
+chmod +x scripts/*.sh
+
 # Run foundation setup first
 echo ""
 echo "========================================="
