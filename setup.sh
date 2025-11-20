@@ -9,9 +9,6 @@ echo ""
 # Install Ansible and Git
 echo "Installing Ansible and Git..."
 sudo apt-get update
-sudo apt-get install -y software-properties-common
-sudo apt-add-repository -y ppa:ansible/ansible || true
-sudo apt-get update
 sudo apt-get install -y ansible git
 
 # Set up SSH key if needed
