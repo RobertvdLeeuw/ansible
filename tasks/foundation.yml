@@ -1,0 +1,114 @@
+---
+- name: "Install {{ category }} packages via apt"
+  apt:
+    name: "{{ software_categories[category].packages.apt | default([]) }}"
+    state: present
+    update_cache: yes
+  when: software_categories[category].packages.apt is defined and (software_categories[category].packages.apt | length > 0)
+  become: yes
+
+- name: "Add Flathub repository"
+  flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  become: yes
+  when: "'flatpak' in software_categories[category].packages.apt"
+
+- name: "Install {{ category }} packages via flatpak"
+  flatpak:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ software_categories[category].packages.flatpak | default([]) }}"
+  when: software_categories[category].packages.flatpak is defined
+
+- name: "Install {{ category }} packages via snap"
+  snap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ software_categories[category].packages.snap | default([]) }}"
+  when: software_categories[category].packages.snap is defined
+
+- name: "Install {{ category }} packages via pip"
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ software_categories[category].packages.pip | default([]) }}"
+  when: software_categories[category].packages.pip is defined
+  become: yes
+
+- name: "Install {{ category }} packages via cargo"
+  shell: cargo install {{ item }}
+  loop: "{{ software_categories[category].packages.cargo | default([]) }}"
+  when: software_categories[category].packages.cargo is defined
+  become: no
+
+- name: "Install {{ category }} packages via npm"
+  npm:
+    name: "{{ item }}"
+    global: yes
+  loop: "{{ software_categories[category].packages.npm | default([]) }}"
+  when: software_categories[category].packages.npm is defined
+  become: yes
+
+# SOPS and age setup for secrets management
+- name: "Install age (encryption tool)"
+  apt:
+    name: age
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: "Check if SOPS is already installed"
+  stat:
+    path: /usr/local/bin/sops
+  register: sops_binary
+
+- name: "Get latest SOPS release version"
+  uri:
+    url: https://api.github.com/repos/getsops/sops/releases/latest
+    return_content: yes
+  register: sops_release
+  when: not sops_binary.stat.exists
+
+- name: "Download and install SOPS"
+  get_url:
+    url: "https://github.com/getsops/sops/releases/download/{{ sops_release.json.tag_name }}/sops-{{ sops_release.json.tag_name }}.linux.amd64"
+    dest: /usr/local/bin/sops
+    mode: '0755'
+  become: yes
+  when: not sops_binary.stat.exists
+
+- name: "Create SOPS age directory"
+  file:
+    path: "{{ ansible_env.HOME }}/.config/sops/age"
+    state: directory
+    mode: '0700'
+
+- name: "Make SOPS setup script executable"
+  file:
+    path: "{{ playbook_dir }}/scripts/sops-setup.sh"
+    mode: '0755'
+
+- name: "Make env helper script executable"
+  file:
+    path: "{{ playbook_dir }}/scripts/env-helper.sh"
+    mode: '0755'
+
+- name: "Display SOPS setup instructions"
+  debug:
+    msg: |
+      SOPS and age have been installed for secrets management.
+
+      To set up your encryption key and .env file:
+      1. Run: ./scripts/sops-setup.sh
+      2. Follow the instructions to create and encrypt your .env file
+
+      Quick commands:
+      - ./scripts/env-helper.sh init   # Create .env from template
+      - ./scripts/env-helper.sh edit   # Edit encrypted .env
+      - ./scripts/env-helper.sh view   # View secrets
+
+      Your age key will be stored at: ~/.config/sops/age/keys.txt
+      IMPORTANT: Back up this key securely!
+

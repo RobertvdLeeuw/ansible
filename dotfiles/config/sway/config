@@ -1,0 +1,30 @@
+# Sway configuration migrated from NixOS
+
+set $mod Mod4
+
+# Terminal
+set $term alacritty
+
+# Window appearance
+default_border none
+default_floating_border none
+titlebar_border_thickness 0
+titlebar_padding 0
+
+# Startup applications
+exec waybar
+exec mako
+exec copyq --start-server
+exec redshift
+exec wl-paste -t text --watch clipman store
+exec wl-paste -p -t image --watch clipman store
+
+# Floating windows for file dialogs
+for_window [title="(?:Open|Save) (?:File|Folder|As)"] floating enable, resize set width 1030 height 710
+
+# Include additional config files
+include ~/.config/sway/monitor.conf
+include ~/.config/sway/controls.conf
+include ~/.config/sway/media.conf
+include ~/.config/sway/movement.conf
+

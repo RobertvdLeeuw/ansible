@@ -1,0 +1,58 @@
+# Alacritty configuration migrated from NixOS
+
+[window]
+opacity = 0.97
+
+[window.padding]
+x = 0
+y = 0
+
+[font]
+size = 12.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+[font.offset]
+x = 0
+y = 0
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[colors.primary]
+background = "#0d0d16"
+foreground = "#c9c7cd"
+
+[colors.cursor]
+background = "#ccdbe0"
+foreground = "#0d0f18"
+
+[colors.vi_mode_cursor]
+background = "#161617"
+foreground = "#c9c7cd"
+
+[colors.normal]
+black = "#282828"
+red = "#ca1444"
+green = "#90b99f"
+yellow = "#e8a831"
+blue = "#b9aeda"
+magenta = "#cb6fa1"
+cyan = "#aca1cf"
+white = "#ccdbe0"
+

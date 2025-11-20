@@ -1,0 +1,17 @@
+[user]
+	# Configure your name and email
+	name = Your Name
+	email = your.email@example.com
+
+[core]
+	editor = nvim
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[color]
+	ui = auto
+

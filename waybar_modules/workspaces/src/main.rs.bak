@@ -1,0 +1,159 @@
+use std::collections::HashMap;
+use std::env;
+use std::io::{self, Error, Write};
+use std::process::{exit, Command, Stdio};
+use std::string::String;
+use std::thread::sleep;
+use std::time::Duration;
+use std::vec;
+
+
+fn build_workspace_reprs() -> HashMap<String, String> {
+    let mut data = HashMap::new();
+    // Nonempty first
+    let open_workspaces: Vec<(String, bool, String)>;
+
+    // loop {
+    match get_open_workspaces() {
+        Ok(res) => {
+            open_workspaces = res;
+            // break;
+        }
+        Err(_) => return data,  // continue,
+    }
+    // }
+
+    for (open_ws_id, visible, repr) in open_workspaces {
+        data.insert(open_ws_id, format_as_icon(&repr, visible));
+    }
+
+    // Then pad with empty
+    for ws_id in (1..=4).chain(11..=14).chain(20..=24) {
+        if !data.contains_key(&ws_id.to_string()) {
+            data.insert(ws_id.to_string(), "".to_string());
+        }
+    }
+
+    data
+}
+
+fn format_as_icon(repr: &str, visible: bool) -> String {
+    if visible {
+        return " ".to_string();
+    }
+
+    let formatted = repr
+        .replace("V[", "")
+        .replace("H[", "")
+        .replace("]", "")
+        .split(" ")
+        .map(|app| {
+            match app {
+                "Spotify" => " ",
+                "Alacritty" => " ",
+                "Brave-browser" => " ",
+                "libreoffice-calc" => "󰧷 ",
+
+                // TEST NAMES FROM BELOW
+                "Whatsapp" => "󰖣 ",
+                "Teams" => "󰊻 ",
+                "steam" => " ",
+
+                // "Blender" => "",
+                // "Discord" => "",
+                _ => "󱗼 ",
+            }
+            .to_string()
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    format!("❬{}❭", formatted)
+}
+
+fn get_open_workspaces() -> Result<Vec<(String, bool, String)>, Error> {
+    let open_workspaces = Command::new("swaymsg")
+        .args(["-t", "get_workspaces"])
+        .stdout(Stdio::piped())
+        .spawn()?;
+
+    let open_workspace_ids = Command::new("jq")
+        .args(["-r", ".[] | \"\\(.name) \\(.visible) \\(.representation)\""])
+        .stdin(Stdio::from(open_workspaces.stdout.unwrap())) // Pipe through.
+        .stdout(Stdio::piped())
+        .spawn()?
+        .wait_with_output()?;
+
+    Ok(String::from_utf8(open_workspace_ids.stdout)
+        .unwrap()
+        .split('\n')
+        .filter(|s| !s.is_empty())
+        .map(|s| {
+            let parts: Vec<&str> = s.split(' ').collect();
+            (
+                parts[0].to_string(),
+                parts[1] == "true",
+                parts[2..parts.len()].join(" ").to_string(),
+            )
+        })
+        .collect())
+}
+
+fn get_corresponding_workspaces(screen_name: &str) -> Vec<&str> {
+    match screen_name {
+        "DP-1" => vec!["1", "2", "3", "4"],
+        "HDMI-A-1" => vec!["11", "12", "13", "14"],
+        "DP-3" => vec!["21", "22", "23", "24"],
+        _ => panic!("Unrecognized screen name: {}", screen_name),
+    }
+}
+
+fn build_json_repr(screen_name: &str) -> String {
+    let workspace_reprs = build_workspace_reprs();
+    if workspace_reprs.is_empty() {
+        return "".to_string();
+    }
+
+    let text = get_corresponding_workspaces(screen_name)
+        .into_iter()
+        .map(|ws| workspace_reprs[ws].clone())
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    format!(
+        "{{ \"text\": \"{}\", \
+\"tooltip\": \"\", \
+\"class\": \"\" }} ",
+        text
+    )
+}
+
+fn main() {
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+
+    let args = env::args().collect::<Vec<_>>();
+
+    if args.len() != 2 {
+        println!(
+            "Wrong number of args (expected 2, got {}), '<location> <filename>'",
+            args.len()
+        );
+        exit(1)
+    }
+
+    let output_screen = args[1].clone();
+
+    let mut prev_json: String = "".to_string();
+    loop {
+        let json = build_json_repr(&output_screen);
+
+        if !json.is_empty() && json != prev_json {
+            writeln!(handle, "{}", json).expect("Error constructing JSON.");
+            let _ = handle.flush();
+            prev_json = json.clone();
+        } 
+
+        sleep(Duration::from_millis(100));
+    }
+}
