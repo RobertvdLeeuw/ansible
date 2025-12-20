@@ -3,7 +3,7 @@
     update_cache: yes
     cache_valid_time: 3600  # Only update if cache is older than 1 hour
 
-- name: Install base packages
+- name: Install base packages (apt)
   apt:
     name:
       - alacritty
@@ -34,5 +34,17 @@
       - snapd
       - topgrade
 
-      # TODO: Rust, python
+      - rustc
+      - cargo
+      - python3
+      - pip
+    state: present
+
+- name: Install base packages (cargo)
+  community.general.cargo:
+    name: 
+      - topgrade  # Handle package updates for all package managers (TODO: Check which).
+      
+      # More terminal QoL
+      - starship
     state: present
