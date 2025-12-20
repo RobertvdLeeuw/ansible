@@ -30,11 +30,6 @@ alias gs="git status"
 alias gc="git commit -m"
 alias gp="git push && clear"
 
-# Environment management
-alias env-edit="~/ansible/scripts/env-helper.sh edit"
-alias env-view="~/ansible/scripts/env-helper.sh view"
-alias env-reload="source ~/.zshrc"
-
 # Global aliases
 alias cat="bat"
 alias nano="nvim"

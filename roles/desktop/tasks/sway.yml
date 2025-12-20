@@ -1,0 +1,21 @@
+- name: Install Sway
+  apt:
+    name:
+      - sway
+      - waybar
+      - wofi
+      
+      # Clipboard
+      - wl-clipboard
+      - clipman
+      - cliphist
+
+      - playerctl
+      - libnotify
+      - mako
+      
+      # Screenshots
+      - grim
+      - slurp
+    
+    state: present

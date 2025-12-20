@@ -1,61 +1,9 @@
 ---
-- name: "Configure Debian Workstation"
+- name: Configure Debian Workstation
   hosts: localhost
-  connection: local
+  become: true
   
-  vars:
-    username: "{{ ansible_env.USER }}"
-    home_dir: "{{ ansible_env.HOME }}"
-    
-  tasks:
-    - name: "Load software categories"
-      include_vars: group_vars/all.yml
-      
-    - name: "Foundation setup"
-      include_tasks: tasks/foundation.yml
-      vars:
-        category: foundation
-      tags: [foundation]
-      
-    - name: "Terminal tools"
-      include_tasks: tasks/terminal.yml
-      vars:
-        category: terminal
-      tags: [terminal]
-      
-    - name: "Development environment"
-      include_tasks: tasks/development.yml
-      vars:
-        category: development
-      tags: [development]
-      
-    - name: "Desktop applications"
-      include_tasks: tasks/desktop.yml
-      vars:
-        category: desktop
-      tags: [desktop]
-
-    - name: "Gaming software"
-      include_tasks: tasks/gaming.yml
-      vars:
-        category: gaming
-      tags: [gaming]
-
-    - name: "Uncategorized software"
-      include_tasks: tasks/uncategorized.yml
-      vars:
-        category: uncategorized
-      tags: [uncategorized]
-
-    - name: "Build and install waybar custom modules"
-      include_tasks: tasks/waybar_modules.yml
-      tags: [waybar_modules, desktop]
-
-    - name: "Configure dotfiles"
-      include_tasks: tasks/dotfiles.yml
-      tags: [dotfiles]
-
-    - name: "Reload environment variables"
-      include_tasks: tasks/env_reload.yml
-      tags: [env, env_reload, always]
-
+  roles:
+    - base
+    - desktop
+    - desktop_apps

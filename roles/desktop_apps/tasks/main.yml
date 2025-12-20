@@ -1,0 +1,8 @@
+- name: Install desktop apps
+  apt:
+    name: 
+      # TODO: Find better file explorer than Dolphin.
+      - dolphin
+      
+      # Games
+    state: present

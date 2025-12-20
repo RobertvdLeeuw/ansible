@@ -1,0 +1,38 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Only update if cache is older than 1 hour
+
+- name: Install base packages
+  apt:
+    name:
+      - alacritty
+      - zsh
+      - tmux
+      - neovim
+      
+      # Terminal QoL
+      - zoxide
+      - fd-find
+      - dust
+      - bat
+      - fzf
+      - wget
+      - jq
+      - which
+      - fastfetch
+      - tree
+      - unzip
+      - zip
+      - git
+      - gcc
+
+      # Package managers
+        # TODO: Write single interface for package management.
+      - nala
+      - flatpak
+      - snapd
+      - topgrade
+
+      # TODO: Rust, python
+    state: present
