@@ -62,5 +62,5 @@
       - topgrade  # Handle package updates for all package managers (TODO: Check which).
       
       # More terminal QoL
-      - starship
+      # - starship
     state: present
