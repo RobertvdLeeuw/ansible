@@ -14,7 +14,7 @@
       # Terminal QoL
       - zoxide
       - fd-find
-      - dust
+      - du-dust
       - bat
       - fzf
       - wget
