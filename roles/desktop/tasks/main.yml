@@ -12,7 +12,7 @@
 
       - playerctl
       # - libnotify
-      - python-mako
+      # - python-mako
       
       # Screenshots
       - grim
