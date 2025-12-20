@@ -32,7 +32,6 @@
       - nala
       - flatpak
       - snapd
-      - topgrade
 
       - rustc
       - cargo
