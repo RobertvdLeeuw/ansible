@@ -56,11 +56,11 @@
   args:
     creates: /root/.cargo/bin/cargo
 
-- name: Install base packages (cargo)
-  community.general.cargo:
-    name: 
-      - topgrade  # Handle package updates for all package managers (TODO: Check which).
-      
-      # More terminal QoL
-      # - starship
-    state: present
+#- name: Install base packages (cargo)
+#  community.general.cargo:
+#    name: 
+#      - topgrade  # Handle package updates for all package managers (TODO: Check which).
+#      
+#      # More terminal QoL
+#      # - starship
+#    state: present
