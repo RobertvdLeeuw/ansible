@@ -1,0 +1,165 @@
+---
+- name: Install minimal KDE Plasma packages
+  apt:
+    name:
+      # Core Plasma components
+      - plasma-desktop        # Core desktop
+      - plasma-workspace     # Workspace components
+      - systemsettings       # System settings
+      
+      # Window management
+      # - kwin-x11            # X11 window manager
+      - kwin-wayland        # Wayland window manager
+      
+      # Essential utilities
+      - kscreen             # Display management
+      
+      # Panel widgets and system integration
+      - plasma-pa           # Audio applet
+      - plasma-nm           # Network manager applet
+      - powerdevil          # Power management
+      - bluedevil           # Bluetooth management
+      
+      # Themes and appearance
+      
+    state: present
+
+- name: Remove KDE bloat packages
+  apt:
+    name:
+      # PIM suite (Personal Information Management)
+      - akonadi-server
+      - kdepim-addons
+      - kdepim-runtime
+      - kmail
+      - kontact
+      - korganizer
+      - kaddressbook
+      - knotes
+      - akregator
+      
+      # Wallet system
+      - kwallet-pam
+      - kwalletmanager
+      - ksshaskpass
+      
+      # Unnecessary applications
+      - plasma-discover      # Software center (use apt/flatpak)
+      - konqueror           # Web browser
+      - dragon-player       # Media player
+      - juk                 # Music player
+      - k3b                 # CD/DVD burning
+      - kcalc               # Calculator
+      - kwrite              # Basic text editor
+      - kate                # Advanced text editor
+      - kcharselect         # Character selector
+      - kmag                # Screen magnifier
+      - kmousetool          # Mouse accessibility
+      
+      # Games
+      - bovo
+      - granatier
+      - kapman
+      - katomic
+      - kblackbox
+      - kblocks
+      - kbounce
+      - kbreakout
+      - kdiamond
+      - kfourinline
+      - kgoldrunner
+      - kigo
+      - killbots
+      - kiriki
+      - kjumpingcube
+      - klickety
+      - klines
+      - kmahjongg
+      - kmines
+      - knavalbattle
+      - knetwalk
+      - knights
+      - kolf
+      - kollision
+      - konquest
+      - kpat
+      - kreversi
+      - kshisen
+      - ksirk
+      - ksnakeduel
+      - kspaceduel
+      - ksquares
+      - ksudoku
+      - ktuberling
+      - kubrick
+      - lskat
+      - palapeli
+      - picmi
+      
+    state: absent
+    autoremove: yes
+
+- name: Configure SDDM as display manager
+  systemd:
+    name: sddm
+    enabled: yes
+    state: started
+
+- name: Disable other display managers
+  systemd:
+    name: "{{ item }}"
+    enabled: no
+    state: stopped
+  loop:
+    - gdm3
+    - lightdm
+  ignore_errors: yes
+
+- name: Create KDE configuration directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_env.USER }}"
+  become: no
+
+- name: Disable KWallet completely
+  copy:
+    dest: "{{ ansible_env.HOME }}/.config/kwalletrc"
+    content: |
+      [Wallet]
+      Enabled=false
+      First Use=false
+      Close When Idle=false
+    mode: '0644'
+    owner: "{{ ansible_env.USER }}"
+  become: no
+
+- name: Create Plasma workspace env directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/plasma-workspace/env"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_env.USER }}"
+    recurse: yes
+  become: no
+
+- name: Configure Plasma to disable wallet on startup
+  copy:
+    dest: "{{ ansible_env.HOME }}/.config/plasma-workspace/env/disable-kwallet.sh"
+    content: |
+      #!/bin/bash
+      export KDE_WALLET_DISABLED=1
+    mode: '0755'
+    owner: "{{ ansible_env.USER }}"
+  become: no
+
+- name: Disable KWallet system-wide
+  copy:
+    dest: /etc/xdg/kwalletrc
+    content: |
+      [Wallet]
+      Enabled=false
+      First Use=false
+      Close When Idle=false
+    mode: '0644'

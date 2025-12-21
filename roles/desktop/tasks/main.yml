@@ -1,21 +1,67 @@
-- name: Install Sway
+- name: Install basic desktop utilities
   apt:
     name:
-      - sway
-      - waybar
-      - wofi
-      
+      - lightdm 
+
+
+      # File management
+      - dolphin
+      # TODO: Nextcloud
+
+      # Audio
+      - pulseaudio
+      - pulseaudio-utils
+      - pavucontrol
+
+      # Video
+
+      # Media
+      - playerctl
+      # TODO: Notification daemon
+
+      # Networking     
+
+      # Graphics     
+
+      # Fonts
+
+      # Bluetooth
+
       # Clipboard
       - wl-clipboard
       - clipman
       - cliphist
 
-      - playerctl
-      # - libnotify
-      # - python-mako
-      
       # Screenshots
       - grim
       - slurp
-    
+
+      # Misc
+      - redshift
+
     state: present
+
+- name: Configure LightDM as default display manager
+  systemd:
+    name: lightdm
+    enabled: yes
+
+- name: Include Sway desktop environment
+  include_tasks: sway.yml
+
+- name: Include KDE Plasma desktop environment  
+  include_tasks: kde.yml
+
+- name: Set up user groups
+  user:
+    name: "{{ ansible_env.USER }}"
+    groups:
+      - audio
+      - video
+      - plugdev
+      - bluetooth
+      - netdev
+      - lp
+      - scanner
+      - docker
+    append: yes

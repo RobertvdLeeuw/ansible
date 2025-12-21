@@ -1,0 +1,9 @@
+- name: Install Sway
+  apt:
+    name:
+      # Core
+      - sway
+      - waybar
+      - wofi
+    
+    state: present
