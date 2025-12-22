@@ -30,7 +30,7 @@
       # Clipboard
       - wl-clipboard
       - clipman
-      - cliphist
+      - copyq
 
       # Screenshots
       - grim
