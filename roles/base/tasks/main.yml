@@ -9,7 +9,6 @@
       # Terminal QoL
       - zoxide
       - fd-find
-      - du-dust
       - bat
       - fzf
       - wget
@@ -31,6 +30,13 @@
 
       - python3
       - pip
+    state: present
+
+- name: Install base packages (snap)
+  community.general.snap:
+    name: 
+      # More terminal QoL
+      - dust
     state: present
 
 # - name: Install base packages (cargo)
