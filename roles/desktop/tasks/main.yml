@@ -29,12 +29,10 @@
 
       # Clipboard
       - wl-clipboard
-      - clipman
       - copyq
 
       # Screenshots
-      - grim
-      - slurp
+      - flameshot
 
       # Misc
       - redshift
