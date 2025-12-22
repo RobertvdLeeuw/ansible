@@ -1,8 +1,3 @@
-- name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600  # Only update if cache is older than 1 hour
-
 - name: Install base packages (apt)
   apt:
     name:
