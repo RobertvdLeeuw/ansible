@@ -14,7 +14,7 @@
       - wget
       - jq
       - which
-      - fastfetch
+      - neofetch
       - tree
       - unzip
       - zip
