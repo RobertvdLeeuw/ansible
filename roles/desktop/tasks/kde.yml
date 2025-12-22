@@ -99,12 +99,6 @@
     state: absent
     autoremove: yes
 
-- name: Configure SDDM as display manager
-  systemd:
-    name: sddm
-    enabled: yes
-    state: started
-
 - name: Disable other display managers
   systemd:
     name: "{{ item }}"
