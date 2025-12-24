@@ -11,5 +11,5 @@ echo "Installing Ansible and Git..."
 sudo apt-get update
 sudo apt-get install -y ansible git
 
-sudo ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git --log-path ~/ansible-pull.log -v
+sudo ansible-pull -U https://github.com/RobertVDLeeuw/ansible.git | tee ~/ansible-pull.log
 # TODO: ansible-pull -d {opt arg where to clone repo to}
