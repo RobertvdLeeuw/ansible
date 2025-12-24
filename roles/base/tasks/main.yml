@@ -14,7 +14,7 @@
       - wget
       - jq
       - which
-      - # neofetch
+      # - neofetch
       - tree
       - unzip
       - zip
