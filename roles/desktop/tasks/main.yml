@@ -31,8 +31,12 @@
       - wl-clipboard
       - copyq
 
-      # Screenshots
-      - flameshot
+      - flameshot # Screenshots
+
+      # Fonts
+      - fonts-noto-core 
+      - fonts-noto-ui-core
+      - fonts-noto-extra
 
       # Misc
       - redshift
